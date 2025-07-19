@@ -1,73 +1,102 @@
-// ================= Configuration ================= //
-const WORK_MINUTES = 30;
-const BREAK_MINUTES = 5;
+// ========== LocalStorage: Session Lengths ==========
+const WORK_MINUTES_KEY = 'pomodoroWorkMinutes';
+const BREAK_MINUTES_KEY = 'pomodoroBreakMinutes';
 
-const WORK_DURATION = WORK_MINUTES * 60;
-const BREAK_DURATION = BREAK_MINUTES * 60;
+function getWorkMinutes() {
+  return Number(localStorage.getItem(WORK_MINUTES_KEY)) || 30;
+}
+function getBreakMinutes() {
+  return Number(localStorage.getItem(BREAK_MINUTES_KEY)) || 5;
+}
+function setWorkMinutes(val) {
+  localStorage.setItem(WORK_MINUTES_KEY, String(val));
+}
+function setBreakMinutes(val) {
+  localStorage.setItem(BREAK_MINUTES_KEY, String(val));
+}
 
-// ================= State Variables ================= //
-let isWorkSession = true; // Tracks session type: true = Work, false = Break
-let timer = WORK_DURATION; // Current timer in seconds
-let interval = null;       // setInterval ID
-let isPaused = false;      // Pause/resume flag
+// ========== State ==========
+let WORK_MINUTES = getWorkMinutes();
+let BREAK_MINUTES = getBreakMinutes();
+let WORK_DURATION = WORK_MINUTES * 60;
+let BREAK_DURATION = BREAK_MINUTES * 60;
 
-// ================= DOM Elements ================= //
+let isWorkSession = true;
+let timer = WORK_DURATION;
+let interval = null;
+let isPaused = false;
+let isTransitioning = false;
+
+// ========== DOM ==========
 const alarmAudio = document.getElementById('alarm-audio');
 const timerDisplay = document.getElementById('timer-display');
 const sessionTypeDisplay = document.getElementById('session-type');
 const startBtn = document.getElementById('start-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const resetBtn = document.getElementById('reset-btn');
+const customLengthsForm = document.getElementById('custom-lengths-form');
+const workLengthInput = document.getElementById('work-length-input');
+const breakLengthInput = document.getElementById('break-length-input');
 
-// ================= Utilities ================= //
+// Populate number inputs from localStorage or default
+workLengthInput.value = WORK_MINUTES;
+breakLengthInput.value = BREAK_MINUTES;
 
-/**
- * Formats seconds into MM:SS format
- * @param {number} seconds
- * @returns {string} "MM:SS"
- */
+// ========== Button State ==========
+function setAllButtonsDisabled(disabled) {
+  startBtn.disabled = disabled;
+  pauseBtn.disabled = disabled;
+  resetBtn.disabled = disabled;
+  [startBtn, pauseBtn, resetBtn].forEach(btn => {
+    if (disabled) {
+      btn.classList.add('disabled');
+    } else {
+      btn.classList.remove('disabled');
+    }
+  });
+}
+
+// ========== Utilities ==========
 function formatTime(seconds) {
   const min = Math.floor(seconds / 60).toString().padStart(2, '0');
   const sec = (seconds % 60).toString().padStart(2, '0');
   return `${min}:${sec}`;
 }
 
-/**
- * Updates timer and session type on UI
- */
 function renderTimer() {
   timerDisplay.textContent = formatTime(timer);
   sessionTypeDisplay.textContent = isWorkSession ? 'Work' : 'Break';
 }
 
-/**
- * Handles end-of-session events: alarm, alert, transition
- */
+// ========== Session Control ==========
 function handleSessionEnd() {
+  setAllButtonsDisabled(true);
+  isTransitioning = true;
   clearInterval(interval);
   interval = null;
   alarmAudio.play();
 
-  if (isWorkSession) {
-    alert("Work session complete! 5-minute break starting.");
-    isWorkSession = false;
-    timer = BREAK_DURATION;
-  } else {
-    alert("Break over! Time to focus again.");
-    isWorkSession = true;
-    timer = WORK_DURATION;
-  }
-  renderTimer();
-  startTimer();
+  setTimeout(() => {
+    if (isWorkSession) {
+      alert(`Work session complete! ${BREAK_MINUTES}-minute break starting.`);
+      isWorkSession = false;
+      timer = BREAK_DURATION;
+    } else {
+      alert("Break over! Time to focus again.");
+      isWorkSession = true;
+      timer = WORK_DURATION;
+    }
+    renderTimer();
+    setAllButtonsDisabled(false);
+    isTransitioning = false;
+    startTimer();
+  }, 700);
 }
 
-// ================= Core Timer Logic ================= //
-
-/**
- * Starts the countdown if not already running
- */
+// ========== Timer Logic ==========
 function startTimer() {
-  if (interval) return;
+  if (interval || isTransitioning) return;
+  setAllButtonsDisabled(false);
 
   interval = setInterval(() => {
     if (!isPaused && timer > 0) {
@@ -80,18 +109,14 @@ function startTimer() {
   }, 1000);
 }
 
-/**
- * Pauses or resumes timer, updates button text
- */
 function pauseTimer() {
+  if (isTransitioning) return;
   isPaused = !isPaused;
   pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
 }
 
-/**
- * Stops timer, resets state, prepares for new start
- */
 function resetTimer() {
+  if (isTransitioning) return;
   clearInterval(interval);
   interval = null;
   isPaused = false;
@@ -102,11 +127,60 @@ function resetTimer() {
   alarmAudio.currentTime = 0;
 }
 
-// ================= Event Listeners ================= //
+// ========== Custom Session Length Logic ==========
+function updateSessionLengths(workMin, breakMin) {
+  // Validate
+  if (
+    typeof workMin !== 'number' || typeof breakMin !== 'number' ||
+    isNaN(workMin) || isNaN(breakMin) ||
+    workMin < 1 || workMin > 90 || breakMin < 1 || breakMin > 30
+  ) {
+    alert('Invalid session lengths.');
+    return;
+  }
+  setWorkMinutes(workMin);
+  setBreakMinutes(breakMin);
 
-startBtn.addEventListener('click', startTimer);
-pauseBtn.addEventListener('click', pauseTimer);
-resetBtn.addEventListener('click', resetTimer);
+  WORK_MINUTES = workMin;
+  BREAK_MINUTES = breakMin;
+  WORK_DURATION = workMin * 60;
+  BREAK_DURATION = breakMin * 60;
 
-// Initial UI setup
+  timer = isWorkSession ? WORK_DURATION : BREAK_DURATION;
+  renderTimer();
+}
+
+customLengthsForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (isTransitioning) return;
+  const workMin = parseInt(workLengthInput.value, 10);
+  const breakMin = parseInt(breakLengthInput.value, 10);
+
+  if (
+    isNaN(workMin) || workMin < 1 || workMin > 90 ||
+    isNaN(breakMin) || breakMin < 1 || breakMin > 30
+  ) {
+    alert('Please enter valid session lengths.');
+    // Reset to last valid if invalid
+    workLengthInput.value = WORK_MINUTES;
+    breakLengthInput.value = BREAK_MINUTES;
+    return;
+  }
+
+  updateSessionLengths(workMin, breakMin);
+  // Confirmation alert has been removed
+});
+
+// ========== Controls ==========
+startBtn.addEventListener('click', function () {
+  if (!isTransitioning) startTimer();
+});
+pauseBtn.addEventListener('click', function () {
+  if (!isTransitioning) pauseTimer();
+});
+resetBtn.addEventListener('click', function () {
+  if (!isTransitioning) resetTimer();
+});
+
+// ========== Init ==========
 renderTimer();
