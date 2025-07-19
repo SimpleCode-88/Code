@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro Timer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="timer-container" role="main" aria-label="Pomodoro Timer">
+    <h1>Pomodoro Timer</h1>
+    <div id="session-type" aria-live="polite">Work</div>
+    <div id="timer-display" aria-live="polite">30:00</div>
+    <div class="controls">
+      <button id="start-btn" aria-label="Start timer">Start</button>
+      <button id="pause-btn" aria-label="Pause or resume timer">Pause</button>
+      <button id="reset-btn" aria-label="Reset timer">Reset</button>
+    </div>
+  </main>
+  <!-- Audio alert for session transitions -->
+  <audio id="alarm-audio" src="https://freesound.org/data/previews/316/316847_4939433-lq.mp3" preload="auto"></audio>
+  <script src="script.js"></script>
+</body>
+</html>
