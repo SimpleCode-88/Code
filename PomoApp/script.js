@@ -1,6 +1,7 @@
-// ========== LocalStorage: Session Lengths ==========
+// ======= LocalStorage: Session and Cycle Lengths =======
 const WORK_MINUTES_KEY = 'pomodoroWorkMinutes';
 const BREAK_MINUTES_KEY = 'pomodoroBreakMinutes';
+const CYCLE_LENGTH_KEY = 'pomodoroCycleLength';
 
 function getWorkMinutes() {
   return Number(localStorage.getItem(WORK_MINUTES_KEY)) || 30;
@@ -15,11 +16,21 @@ function setBreakMinutes(val) {
   localStorage.setItem(BREAK_MINUTES_KEY, String(val));
 }
 
-// ========== State ==========
+function getCycleLength() {
+  return Number(localStorage.getItem(CYCLE_LENGTH_KEY)) || 4;
+}
+function setCycleLength(val) {
+  localStorage.setItem(CYCLE_LENGTH_KEY, String(val));
+}
+
+// ======= State =======
 let WORK_MINUTES = getWorkMinutes();
 let BREAK_MINUTES = getBreakMinutes();
+let CYCLE_LENGTH = getCycleLength();
 let WORK_DURATION = WORK_MINUTES * 60;
 let BREAK_DURATION = BREAK_MINUTES * 60;
+let LONG_BREAK_MINUTES = 15;
+let LONG_BREAK_DURATION = LONG_BREAK_MINUTES * 60;
 
 let isWorkSession = true;
 let timer = WORK_DURATION;
@@ -27,7 +38,12 @@ let interval = null;
 let isPaused = false;
 let isTransitioning = false;
 
-// ========== DOM ==========
+// New state/cycle variables
+let sessionCount = 0;
+let cycleLength = CYCLE_LENGTH;
+let isLongBreak = false;
+
+// ======= DOM =======
 const alarmAudio = document.getElementById('alarm-audio');
 const timerDisplay = document.getElementById('timer-display');
 const sessionTypeDisplay = document.getElementById('session-type');
@@ -37,26 +53,26 @@ const resetBtn = document.getElementById('reset-btn');
 const customLengthsForm = document.getElementById('custom-lengths-form');
 const workLengthInput = document.getElementById('work-length-input');
 const breakLengthInput = document.getElementById('break-length-input');
+const cycleLengthInput = document.getElementById('cycle-length-input');
+const sessionCounter = document.getElementById('session-counter');
 
-// Populate number inputs from localStorage or default
+// Populate from localStorage or default
 workLengthInput.value = WORK_MINUTES;
 breakLengthInput.value = BREAK_MINUTES;
+cycleLengthInput.value = cycleLength;
 
-// ========== Button State ==========
+// ======= Button State =======
 function setAllButtonsDisabled(disabled) {
   startBtn.disabled = disabled;
   pauseBtn.disabled = disabled;
   resetBtn.disabled = disabled;
   [startBtn, pauseBtn, resetBtn].forEach(btn => {
-    if (disabled) {
-      btn.classList.add('disabled');
-    } else {
-      btn.classList.remove('disabled');
-    }
+    if (disabled) btn.classList.add('disabled');
+    else btn.classList.remove('disabled');
   });
 }
 
-// ========== Utilities ==========
+// ======= Utilities =======
 function formatTime(seconds) {
   const min = Math.floor(seconds / 60).toString().padStart(2, '0');
   const sec = (seconds % 60).toString().padStart(2, '0');
@@ -65,10 +81,19 @@ function formatTime(seconds) {
 
 function renderTimer() {
   timerDisplay.textContent = formatTime(timer);
-  sessionTypeDisplay.textContent = isWorkSession ? 'Work' : 'Break';
+  sessionTypeDisplay.textContent = isWorkSession 
+    ? (isLongBreak ? 'Long Break' : 'Work') 
+    : 'Break';
 }
 
-// ========== Session Control ==========
+function updateSessionDisplay() {
+  sessionCounter.textContent = 
+    isLongBreak
+      ? `On your long break! Cycle complete.`
+      : `Pomodoro: ${isWorkSession ? sessionCount + 1 : sessionCount} / ${cycleLength}`;
+}
+
+// ======= Session Control =======
 function handleSessionEnd() {
   setAllButtonsDisabled(true);
   isTransitioning = true;
@@ -78,22 +103,33 @@ function handleSessionEnd() {
 
   setTimeout(() => {
     if (isWorkSession) {
-      alert(`Work session complete! ${BREAK_MINUTES}-minute break starting.`);
+      sessionCount++;
+      if (sessionCount >= cycleLength) {
+        isLongBreak = true;
+        alert(`Cycle complete! Time for a long break.`);
+        timer = LONG_BREAK_DURATION;
+        sessionCount = 0; // Reset for next cycle
+      } else {
+        alert(`Work session complete! ${BREAK_MINUTES}-minute break starting.`);
+        timer = BREAK_DURATION;
+        isLongBreak = false;
+      }
       isWorkSession = false;
-      timer = BREAK_DURATION;
     } else {
-      alert("Break over! Time to focus again.");
       isWorkSession = true;
+      isLongBreak = false;
       timer = WORK_DURATION;
+      alert("Break over! Time to focus again.");
     }
     renderTimer();
+    updateSessionDisplay();
     setAllButtonsDisabled(false);
     isTransitioning = false;
     startTimer();
   }, 700);
 }
 
-// ========== Timer Logic ==========
+// ======= Timer Logic =======
 function startTimer() {
   if (interval || isTransitioning) return;
   setAllButtonsDisabled(false);
@@ -121,15 +157,17 @@ function resetTimer() {
   interval = null;
   isPaused = false;
   pauseBtn.textContent = 'Pause';
-  timer = isWorkSession ? WORK_DURATION : BREAK_DURATION;
+  timer = isWorkSession 
+    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) 
+    : BREAK_DURATION;
   renderTimer();
   alarmAudio.pause();
   alarmAudio.currentTime = 0;
+  updateSessionDisplay();
 }
 
-// ========== Custom Session Length Logic ==========
+// ======= Custom Session/Cycle Length Logic =======
 function updateSessionLengths(workMin, breakMin) {
-  // Validate
   if (
     typeof workMin !== 'number' || typeof breakMin !== 'number' ||
     isNaN(workMin) || isNaN(breakMin) ||
@@ -146,7 +184,10 @@ function updateSessionLengths(workMin, breakMin) {
   WORK_DURATION = workMin * 60;
   BREAK_DURATION = breakMin * 60;
 
-  timer = isWorkSession ? WORK_DURATION : BREAK_DURATION;
+  // Reset timer to current session type and session cycle
+  timer = isWorkSession 
+    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) 
+    : BREAK_DURATION;
   renderTimer();
 }
 
@@ -155,23 +196,28 @@ customLengthsForm.addEventListener('submit', function(e) {
   if (isTransitioning) return;
   const workMin = parseInt(workLengthInput.value, 10);
   const breakMin = parseInt(breakLengthInput.value, 10);
+  const userCycleLength = parseInt(cycleLengthInput.value, 10);
 
   if (
     isNaN(workMin) || workMin < 1 || workMin > 90 ||
-    isNaN(breakMin) || breakMin < 1 || breakMin > 30
+    isNaN(breakMin) || breakMin < 1 || breakMin > 30 ||
+    isNaN(userCycleLength) || userCycleLength < 1 || userCycleLength > 10
   ) {
-    alert('Please enter valid session lengths.');
-    // Reset to last valid if invalid
+    alert('Please enter valid session lengths and cycle length.');
     workLengthInput.value = WORK_MINUTES;
     breakLengthInput.value = BREAK_MINUTES;
+    cycleLengthInput.value = cycleLength;
     return;
   }
 
+  setCycleLength(userCycleLength);
+  cycleLength = userCycleLength;
+
   updateSessionLengths(workMin, breakMin);
-  // Confirmation alert has been removed
+  updateSessionDisplay();
 });
 
-// ========== Controls ==========
+// ======= Controls =======
 startBtn.addEventListener('click', function () {
   if (!isTransitioning) startTimer();
 });
@@ -182,5 +228,6 @@ resetBtn.addEventListener('click', function () {
   if (!isTransitioning) resetTimer();
 });
 
-// ========== Init ==========
+// ======= Init =======
 renderTimer();
+updateSessionDisplay();

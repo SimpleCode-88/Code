@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pomodoro Timer</title>
-  <!-- Modern Font -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/48/000000/clock.png" />
   <link rel="stylesheet" href="styles.css"/>
@@ -13,7 +12,10 @@
   <div class="gradient-bg">
     <main>
       <section class="glass-card">
-        <!-- Custom session lengths form -->
+        
+        <!-- Session/cycle counter display -->
+        <div id="session-counter" aria-live="polite"></div>
+        <!-- Custom session/cycle lengths form -->
         <form id="custom-lengths-form" autocomplete="off">
           <label>
             Work (minutes):
@@ -35,11 +37,22 @@
               required 
               aria-label="Set break session length in minutes">
           </label>
+          <label>
+            Pomodoros per cycle:
+            <input 
+              id="cycle-length-input"
+              type="number"
+              min="1"
+              max="10"
+              value="4"
+              required
+              aria-label="Set how many Pomodoros per cycle"/>
+          </label>
           <button type="submit">Update</button>
         </form>
         <h1>Pomodoro Timer</h1>
         <div id="progress-ring">
-          <span id="timer-display">25:00</span>
+          <span id="timer-display">30:00</span>
         </div>
         <div id="session-type">Work</div>
         <div class="controls">
