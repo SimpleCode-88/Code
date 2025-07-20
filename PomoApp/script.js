@@ -56,10 +56,6 @@ const sessionTypeDisplay = document.getElementById('session-type');
 const startBtn = document.getElementById('start-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const resetBtn = document.getElementById('reset-btn');
-const customLengthsForm = document.getElementById('custom-lengths-form');
-const workLengthInput = document.getElementById('work-length-input');
-const breakLengthInput = document.getElementById('break-length-input');
-const cycleLengthInput = document.getElementById('cycle-length-input');
 const sessionCounter = document.getElementById('session-counter');
 
 // ======= SETTINGS MODAL DOM =======
@@ -71,11 +67,6 @@ const settingsWorkInput = document.getElementById('settings-work');
 const settingsBreakInput = document.getElementById('settings-break');
 const settingsCycleInput = document.getElementById('settings-cycle');
 const settingsLongBreakInput = document.getElementById('settings-long-break');
-
-// ======= Populate from localStorage or default =======
-workLengthInput.value = WORK_MINUTES;
-breakLengthInput.value = BREAK_MINUTES;
-cycleLengthInput.value = cycleLength;
 
 // ======= Button State =======
 function setAllButtonsDisabled(disabled) {
@@ -182,58 +173,7 @@ function resetTimer() {
   updateSessionDisplay();
 }
 
-// ======= Custom Session/Cycle Length Logic =======
-function updateSessionLengths(workMin, breakMin) {
-  if (
-    typeof workMin !== 'number' || typeof breakMin !== 'number' ||
-    isNaN(workMin) || isNaN(breakMin) ||
-    workMin < 1 || workMin > 90 || breakMin < 1 || breakMin > 30
-  ) {
-    alert('Invalid session lengths.');
-    return;
-  }
-  setWorkMinutes(workMin);
-  setBreakMinutes(breakMin);
-
-  WORK_MINUTES = workMin;
-  BREAK_MINUTES = breakMin;
-  WORK_DURATION = workMin * 60;
-  BREAK_DURATION = breakMin * 60;
-
-  timer = isWorkSession 
-    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) 
-    : BREAK_DURATION;
-  renderTimer();
-}
-
-customLengthsForm.addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (isTransitioning) return;
-  const workMin = parseInt(workLengthInput.value, 10);
-  const breakMin = parseInt(breakLengthInput.value, 10);
-  const userCycleLength = parseInt(cycleLengthInput.value, 10);
-
-  if (
-    isNaN(workMin) || workMin < 1 || workMin > 90 ||
-    isNaN(breakMin) || breakMin < 1 || breakMin > 30 ||
-    isNaN(userCycleLength) || userCycleLength < 1 || userCycleLength > 10
-  ) {
-    alert('Please enter valid session lengths and cycle length.');
-    workLengthInput.value = WORK_MINUTES;
-    breakLengthInput.value = BREAK_MINUTES;
-    cycleLengthInput.value = cycleLength;
-    return;
-  }
-
-  setCycleLength(userCycleLength);
-  cycleLength = userCycleLength;
-
-  updateSessionLengths(workMin, breakMin);
-  updateSessionDisplay();
-});
-
 // ======= SETTINGS MODAL LOGIC =======
-
 // Open the modal, fill with current values
 settingsBtn.addEventListener('click', () => {
   settingsWorkInput.value = WORK_MINUTES;
@@ -278,11 +218,6 @@ settingsForm.addEventListener('submit', (e) => {
   LONG_BREAK_DURATION = l * 60;
   WORK_DURATION = WORK_MINUTES * 60;
   BREAK_DURATION = BREAK_MINUTES * 60;
-
-  // Sync shorter form for display
-  workLengthInput.value = w;
-  breakLengthInput.value = b;
-  cycleLengthInput.value = c;
 
   // Update current timer and UI
   timer = isWorkSession 

@@ -11,76 +11,16 @@
 <body>
   <div class="gradient-bg">
     <main>
-      <section class="glass-card">
-        <!-- Settings Button, sweet spot: top right of your main card -->
-<button id="open-settings" class="settings-btn" aria-label="Open settings">
-  ⚙️
-</button>
-
-<!-- Modal using <dialog> for accessibility and easy handling -->
-<dialog id="settings-modal">
-  <form id="settings-form" method="dialog">
-    <h2>Settings</h2>
-    <label>
-      Work (minutes):
-      <input id="settings-work" type="number" min="1" max="90" required />
-    </label>
-    <label>
-      Break (minutes):
-      <input id="settings-break" type="number" min="1" max="30" required />
-    </label>
-    <label>
-      Pomodoros per cycle:
-      <input id="settings-cycle" type="number" min="1" max="10" required />
-    </label>
-    <label>
-      Long break (minutes):
-      <input id="settings-long-break" type="number" min="1" max="60" required />
-    </label>
-    <menu>
-      <button value="cancel" type="button" id="close-settings">Cancel</button>
-      <button value="default" type="submit">Save</button>
-    </menu>
-  </form>
-</dialog>
+      <section class="glass-card" style="position: relative;">
+        <!-- Settings Button -->
+        <button id="open-settings" class="settings-btn" aria-label="Open settings">⚙️</button>
 
         <!-- Session/cycle counter display -->
         <div id="session-counter" aria-live="polite"></div>
-        <!-- Custom session/cycle lengths form -->
-        <form id="custom-lengths-form" autocomplete="off">
-          <label>
-            Work (minutes):
-            <input 
-              id="work-length-input" 
-              type="number" 
-              min="1" max="90" 
-              value="30" 
-              required 
-              aria-label="Set work session length in minutes">
-          </label>
-          <label>
-            Break (minutes):
-            <input 
-              id="break-length-input" 
-              type="number" 
-              min="1" max="30" 
-              value="5" 
-              required 
-              aria-label="Set break session length in minutes">
-          </label>
-          <label>
-            Pomodoros per cycle:
-            <input 
-              id="cycle-length-input"
-              type="number"
-              min="1"
-              max="10"
-              value="4"
-              required
-              aria-label="Set how many Pomodoros per cycle"/>
-          </label>
-          <button type="submit">Update</button>
-        </form>
+
+        <!-- Session Summary (optional, can remove for super-minimal look) -->
+        <!-- <div id="session-summary" class="session-summary"></div> -->
+
         <h1>Pomodoro Timer</h1>
         <div id="progress-ring">
           <span id="timer-display">30:00</span>
@@ -93,6 +33,32 @@
         </div>
       </section>
     </main>
+    <!-- Settings Modal -->
+    <dialog id="settings-modal">
+      <form id="settings-form" method="dialog">
+        <h2>Settings</h2>
+        <label>
+          Work (minutes):
+          <input id="settings-work" type="number" min="1" max="90" required />
+        </label>
+        <label>
+          Break (minutes):
+          <input id="settings-break" type="number" min="1" max="30" required />
+        </label>
+        <label>
+          Pomodoros per cycle:
+          <input id="settings-cycle" type="number" min="1" max="10" required />
+        </label>
+        <label>
+          Long break (minutes):
+          <input id="settings-long-break" type="number" min="1" max="60" required />
+        </label>
+        <menu>
+          <button value="cancel" type="button" id="close-settings">Cancel</button>
+          <button value="default" type="submit">Save</button>
+        </menu>
+      </form>
+    </dialog>
     <!-- Audio alert for session transitions -->
     <audio
       id="alarm-audio"
