@@ -264,3 +264,112 @@ h1 {
     min-height: 36px;
   }
 }
+.settings-btn {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.3rem;
+  background: linear-gradient(120deg, #ff7675, #7fa7f5 80%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2.8rem;
+  height: 2.8rem;
+  font-size: 1.35rem;
+  cursor: pointer;
+  box-shadow: 0 3px 14px rgba(130,130,255,0.10);
+  transition: background 0.21s;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.settings-btn:focus, .settings-btn:hover {
+  background: linear-gradient(120deg, #fcb3bd, #90a6f8 119%);
+  outline: none;
+}
+
+/* Dialog modal styling */
+#settings-modal {
+  border: none;
+  border-radius: 1.4rem;
+  background: rgba(255,255,255,0.82);
+  box-shadow: 0 6px 48px 0 rgba(215, 140, 160, 0.26);
+  padding: 2.0rem 2.5rem 1.7rem 2.5rem;
+  max-width: 350px;
+  width: 94vw;
+  color: #273368;
+  font-family: inherit;
+}
+
+#settings-modal::backdrop {
+  background: linear-gradient(120deg, #c7a5f8 10%, #f9b4c3 95%);
+  opacity: 0.34;
+}
+
+/* Settings form layout */
+#settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+#settings-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+#settings-form input {
+  margin-top: 0.28rem;
+  padding: 0.46rem 0.7rem;
+  border-radius: 8px;
+  border: 1.6px solid #8da4fe;
+  background: #f7f7fe;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1d265b;
+  margin-bottom: 0.15rem;
+  transition: border-color 0.25s;
+}
+#settings-form input:focus {
+  border-color: #fa9cc9;
+  outline: none;
+}
+
+/* Modal buttons */
+#settings-form menu {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 1.1rem;
+}
+#settings-form button {
+  background: linear-gradient(120deg, #ff7675 70%, #7fa7f5 140%);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.65rem 1.3rem;
+  border-radius: 1.1rem;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.22s;
+}
+#settings-form button[value="cancel"] {
+  background: #eee;
+  color: #a55;
+}
+#settings-form button:hover, #settings-form button:focus {
+  background: linear-gradient(120deg, #fecade, #a4c0fb);
+  outline: none;
+}
+#settings-form button[value="cancel"]:hover, #settings-form button[value="cancel"]:focus {
+  background: #ffe9e9;
+  color: #fb6f6f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  #settings-modal {
+    padding: 1.2rem 0.5rem 1.1rem 0.5rem;
+    max-width: 98vw;
+  }
+}

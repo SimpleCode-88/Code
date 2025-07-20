@@ -2,6 +2,7 @@
 const WORK_MINUTES_KEY = 'pomodoroWorkMinutes';
 const BREAK_MINUTES_KEY = 'pomodoroBreakMinutes';
 const CYCLE_LENGTH_KEY = 'pomodoroCycleLength';
+const LONG_BREAK_MINUTES_KEY = 'pomodoroLongBreakMinutes';
 
 function getWorkMinutes() {
   return Number(localStorage.getItem(WORK_MINUTES_KEY)) || 30;
@@ -15,21 +16,26 @@ function setWorkMinutes(val) {
 function setBreakMinutes(val) {
   localStorage.setItem(BREAK_MINUTES_KEY, String(val));
 }
-
 function getCycleLength() {
   return Number(localStorage.getItem(CYCLE_LENGTH_KEY)) || 4;
 }
 function setCycleLength(val) {
   localStorage.setItem(CYCLE_LENGTH_KEY, String(val));
 }
+function getLongBreakMinutes() {
+  return Number(localStorage.getItem(LONG_BREAK_MINUTES_KEY)) || 15;
+}
+function setLongBreakMinutes(val) {
+  localStorage.setItem(LONG_BREAK_MINUTES_KEY, String(val));
+}
 
 // ======= State =======
 let WORK_MINUTES = getWorkMinutes();
 let BREAK_MINUTES = getBreakMinutes();
 let CYCLE_LENGTH = getCycleLength();
+let LONG_BREAK_MINUTES = getLongBreakMinutes();
 let WORK_DURATION = WORK_MINUTES * 60;
 let BREAK_DURATION = BREAK_MINUTES * 60;
-let LONG_BREAK_MINUTES = 15;
 let LONG_BREAK_DURATION = LONG_BREAK_MINUTES * 60;
 
 let isWorkSession = true;
@@ -56,7 +62,17 @@ const breakLengthInput = document.getElementById('break-length-input');
 const cycleLengthInput = document.getElementById('cycle-length-input');
 const sessionCounter = document.getElementById('session-counter');
 
-// Populate from localStorage or default
+// ======= SETTINGS MODAL DOM =======
+const settingsBtn = document.getElementById('open-settings');
+const settingsModal = document.getElementById('settings-modal');
+const settingsForm = document.getElementById('settings-form');
+const closeSettingsBtn = document.getElementById('close-settings');
+const settingsWorkInput = document.getElementById('settings-work');
+const settingsBreakInput = document.getElementById('settings-break');
+const settingsCycleInput = document.getElementById('settings-cycle');
+const settingsLongBreakInput = document.getElementById('settings-long-break');
+
+// ======= Populate from localStorage or default =======
 workLengthInput.value = WORK_MINUTES;
 breakLengthInput.value = BREAK_MINUTES;
 cycleLengthInput.value = cycleLength;
@@ -184,7 +200,6 @@ function updateSessionLengths(workMin, breakMin) {
   WORK_DURATION = workMin * 60;
   BREAK_DURATION = breakMin * 60;
 
-  // Reset timer to current session type and session cycle
   timer = isWorkSession 
     ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) 
     : BREAK_DURATION;
@@ -215,6 +230,79 @@ customLengthsForm.addEventListener('submit', function(e) {
 
   updateSessionLengths(workMin, breakMin);
   updateSessionDisplay();
+});
+
+// ======= SETTINGS MODAL LOGIC =======
+
+// Open the modal, fill with current values
+settingsBtn.addEventListener('click', () => {
+  settingsWorkInput.value = WORK_MINUTES;
+  settingsBreakInput.value = BREAK_MINUTES;
+  settingsCycleInput.value = cycleLength;
+  settingsLongBreakInput.value = LONG_BREAK_MINUTES;
+  settingsModal.showModal();
+});
+
+// Close modal with cancel
+closeSettingsBtn.addEventListener('click', () => {
+  settingsModal.close();
+});
+
+// Save and apply settings from modal
+settingsForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const w = parseInt(settingsWorkInput.value, 10);
+  const b = parseInt(settingsBreakInput.value, 10);
+  const c = parseInt(settingsCycleInput.value, 10);
+  const l = parseInt(settingsLongBreakInput.value, 10);
+
+  if (
+    isNaN(w) || w < 1 || w > 90 ||
+    isNaN(b) || b < 1 || b > 30 ||
+    isNaN(c) || c < 1 || c > 10 ||
+    isNaN(l) || l < 1 || l > 60
+  ) {
+    alert('Please enter valid values for all settings.');
+    return;
+  }
+
+  setWorkMinutes(w);
+  setBreakMinutes(b);
+  setCycleLength(c);
+  setLongBreakMinutes(l);
+
+  WORK_MINUTES = w;
+  BREAK_MINUTES = b;
+  cycleLength = c;
+  LONG_BREAK_MINUTES = l;
+  LONG_BREAK_DURATION = l * 60;
+  WORK_DURATION = WORK_MINUTES * 60;
+  BREAK_DURATION = BREAK_MINUTES * 60;
+
+  // Sync shorter form for display
+  workLengthInput.value = w;
+  breakLengthInput.value = b;
+  cycleLengthInput.value = c;
+
+  // Update current timer and UI
+  timer = isWorkSession 
+    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) 
+    : BREAK_DURATION;
+  renderTimer();
+  updateSessionDisplay();
+
+  settingsModal.close();
+});
+
+// Close modal when clicking outside
+settingsModal.addEventListener("click", (event) => {
+  const rect = settingsModal.getBoundingClientRect();
+  if (
+    event.clientX < rect.left || event.clientX > rect.right ||
+    event.clientY < rect.top || event.clientY > rect.bottom
+  ) {
+    settingsModal.close();
+  }
 });
 
 // ======= Controls =======
