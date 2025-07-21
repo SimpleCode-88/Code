@@ -97,7 +97,7 @@ function updateSessionDisplay() {
   sessionCounter.textContent = 
     isLongBreak
       ? `On your long break! Cycle complete.`
-      : `Pomodoro: ${isWorkSession ? sessionCount + 1 : sessionCount} / ${cycleLength}`;
+      : `Session: ${isWorkSession ? sessionCount + 1 : sessionCount} / ${cycleLength}`;
 }
 
 // ======= Session Control =======
