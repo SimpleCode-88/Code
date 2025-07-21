@@ -366,6 +366,29 @@ h1 {
   color: #fb6f6f;
 }
 
+.toast {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(249,180,195,0.96);
+  color: #222255;
+  font-weight: 600;
+  padding: 1.2rem 2.1rem;
+  border-radius: 1.4rem;
+  box-shadow: 0 4px 24px rgba(252, 156, 201, 0.12);
+  font-size: 1.12rem;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.29s;
+}
+.toast.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 480px) {
   #settings-modal {

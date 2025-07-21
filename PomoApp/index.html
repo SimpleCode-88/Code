@@ -32,6 +32,16 @@
           <button id="reset-btn" aria-label="Reset timer">Reset</button>
         </div>
       </section>
+      <!-- Toast for session notifications -->
+<div id="toast" class="toast" aria-live="polite" style="display:none"></div>
+
+<!-- Alarm audio - using local .wav file -->
+<audio
+  id="alarm-audio"
+  src="mixkit-happy-bell-alert-601.wav"
+  preload="auto"
+></audio>
+      <div id="session-summary" class="session-summary"></div>
     </main>
     <!-- Settings Modal -->
     <dialog id="settings-modal">
@@ -46,7 +56,7 @@
           <input id="settings-break" type="number" min="1" max="30" required />
         </label>
         <label>
-          Pomodoros per cycle:
+          Sessions per cycle:
           <input id="settings-cycle" type="number" min="1" max="10" required />
         </label>
         <label>
@@ -59,12 +69,6 @@
         </menu>
       </form>
     </dialog>
-    <!-- Audio alert for session transitions -->
-    <audio
-      id="alarm-audio"
-      src="https://freesound.org/data/previews/316/316847_4939433-lq.mp3"
-      preload="auto"
-    ></audio>
   </div>
   <script src="script.js"></script>
 </body>

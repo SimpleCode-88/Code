@@ -44,19 +44,22 @@ let interval = null;
 let isPaused = false;
 let isTransitioning = false;
 
-// New state/cycle variables
 let sessionCount = 0;
 let cycleLength = CYCLE_LENGTH;
 let isLongBreak = false;
 
 // ======= DOM =======
 const alarmAudio = document.getElementById('alarm-audio');
+alarmAudio.volume = 0.15; // gentle default volume
 const timerDisplay = document.getElementById('timer-display');
 const sessionTypeDisplay = document.getElementById('session-type');
 const startBtn = document.getElementById('start-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const resetBtn = document.getElementById('reset-btn');
 const sessionCounter = document.getElementById('session-counter');
+
+// Toast DOM
+const toast = document.getElementById('toast');
 
 // ======= SETTINGS MODAL DOM =======
 const settingsBtn = document.getElementById('open-settings');
@@ -79,6 +82,17 @@ function setAllButtonsDisabled(disabled) {
   });
 }
 
+// ======= TOAST NOTIFICATIONS =======
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add('show');
+  toast.style.display = 'block';
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.style.display = 'none', 300);
+  }, 3000);
+}
+
 // ======= Utilities =======
 function formatTime(seconds) {
   const min = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -89,7 +103,7 @@ function formatTime(seconds) {
 function renderTimer() {
   timerDisplay.textContent = formatTime(timer);
   sessionTypeDisplay.textContent = isWorkSession 
-    ? (isLongBreak ? 'Long Break' : 'Work') 
+    ? (isLongBreak ? 'Long Break' : 'Work')
     : 'Break';
 }
 
@@ -97,7 +111,7 @@ function updateSessionDisplay() {
   sessionCounter.textContent = 
     isLongBreak
       ? `On your long break! Cycle complete.`
-      : `Session: ${isWorkSession ? sessionCount + 1 : sessionCount} / ${cycleLength}`;
+      : `Current session: ${isWorkSession ? sessionCount + 1 : sessionCount} / ${cycleLength}`;
 }
 
 // ======= Session Control =======
@@ -113,11 +127,11 @@ function handleSessionEnd() {
       sessionCount++;
       if (sessionCount >= cycleLength) {
         isLongBreak = true;
-        alert(`Cycle complete! Time for a long break.`);
+        showToast('Cycle complete! Time for a long break.');
         timer = LONG_BREAK_DURATION;
-        sessionCount = 0; // Reset for next cycle
+        sessionCount = 0;
       } else {
-        alert(`Work session complete! ${BREAK_MINUTES}-minute break starting.`);
+        showToast(`Work session complete! ${BREAK_MINUTES}-minute break starting.`);
         timer = BREAK_DURATION;
         isLongBreak = false;
       }
@@ -125,8 +139,8 @@ function handleSessionEnd() {
     } else {
       isWorkSession = true;
       isLongBreak = false;
+      showToast('Break over! Time to focus again.');
       timer = WORK_DURATION;
-      alert("Break over! Time to focus again.");
     }
     renderTimer();
     updateSessionDisplay();
@@ -164,8 +178,8 @@ function resetTimer() {
   interval = null;
   isPaused = false;
   pauseBtn.textContent = 'Pause';
-  timer = isWorkSession 
-    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) 
+  timer = isWorkSession
+    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION)
     : BREAK_DURATION;
   renderTimer();
   alarmAudio.pause();
@@ -174,7 +188,6 @@ function resetTimer() {
 }
 
 // ======= SETTINGS MODAL LOGIC =======
-// Open the modal, fill with current values
 settingsBtn.addEventListener('click', () => {
   settingsWorkInput.value = WORK_MINUTES;
   settingsBreakInput.value = BREAK_MINUTES;
@@ -183,12 +196,10 @@ settingsBtn.addEventListener('click', () => {
   settingsModal.showModal();
 });
 
-// Close modal with cancel
 closeSettingsBtn.addEventListener('click', () => {
   settingsModal.close();
 });
 
-// Save and apply settings from modal
 settingsForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const w = parseInt(settingsWorkInput.value, 10);
@@ -202,7 +213,7 @@ settingsForm.addEventListener('submit', (e) => {
     isNaN(c) || c < 1 || c > 10 ||
     isNaN(l) || l < 1 || l > 60
   ) {
-    alert('Please enter valid values for all settings.');
+    showToast('Please enter valid values for all settings.');
     return;
   }
 
@@ -219,9 +230,8 @@ settingsForm.addEventListener('submit', (e) => {
   WORK_DURATION = WORK_MINUTES * 60;
   BREAK_DURATION = BREAK_MINUTES * 60;
 
-  // Update current timer and UI
-  timer = isWorkSession 
-    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) 
+  timer = isWorkSession
+    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION)
     : BREAK_DURATION;
   renderTimer();
   updateSessionDisplay();
@@ -229,7 +239,6 @@ settingsForm.addEventListener('submit', (e) => {
   settingsModal.close();
 });
 
-// Close modal when clicking outside
 settingsModal.addEventListener("click", (event) => {
   const rect = settingsModal.getBoundingClientRect();
   if (
