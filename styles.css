@@ -93,9 +93,12 @@ h1 {
 
 .controls {
   display: flex;
-  place-content: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
+  padding: 0 0.5rem; /* Add horizontal padding */
   width: 100%;
+  box-sizing: border-box;
 }
 
 button {
