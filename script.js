@@ -72,6 +72,28 @@ const settingsBreakInput = document.getElementById('settings-break');
 const settingsCycleInput = document.getElementById('settings-cycle');
 const settingsLongBreakInput = document.getElementById('settings-long-break');
 
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+
+// Function to apply theme based on localStorage or default
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  localStorage.setItem('theme', theme);
+}
+
+// Initialize theme on page load
+const savedTheme = localStorage.getItem('theme') || 'light';
+applyTheme(savedTheme);
+
+// Toggle theme on button click
+themeToggleBtn.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+});
+
 // ======= Button State =======
 function setAllButtonsDisabled(disabled) {
   startBtn.disabled = disabled;
