@@ -219,6 +219,103 @@ button.disabled {
   padding: 0.4em 1.25em;
   box-shadow: none;
 }
+#task-tracker {
+  background: rgba(255 255 255 / 0.1);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-radius: 16px;
+  border: 1px solid rgba(255 255 255 / 0.18);
+  padding: 1rem 1rem 1.2rem 1rem;
+  box-shadow: 0 4px 30px rgba(0 0 0 / 0.1);
+  color: var(--text-primary);
+  font-weight: 600;
+  max-height: 180px;
+  overflow: hidden;
+}
+
+#task-tracker h2 {
+  margin-bottom: 0.7rem;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  text-align: center;
+  user-select: none;
+  letter-spacing: 0.05em;
+}
+
+#task-form {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+#task-input {
+  flex-grow: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid rgba(255 255 255 / 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: rgba(255 255 255 / 0.07);
+  transition: border-color 0.3s ease;
+}
+
+#task-input:focus {
+  border-color: var(--text-secondary);
+  outline: none;
+  background: rgba(255 255 255 / 0.15);
+}
+
+#task-form button {
+  background: var(--button-bg-gradient);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--button-text-color);
+  padding: 0.48rem 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(151, 189, 240, 0.18);
+  transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+#task-form button:hover,
+#task-form button:focus {
+  background: linear-gradient(90deg, #fca9d7, #74a7f2);
+  color: #ffffff;
+  outline: none;
+}
+
+#task-list {
+  list-style-type: disc;
+  padding-left: 1.4rem;
+  max-height: 120px;
+  overflow-y: auto;
+  font-size: 1rem;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+#task-list li {
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+  outline-offset: 2px;
+  outline: none;
+}
+
+#task-list li:hover,
+#task-list li:focus {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  outline: 2px solid var(--text-secondary);
+  border-radius: 6px;
+}
+
+#task-list li.done,
+#task-list li.completed {
+  text-decoration: line-through;
+  color: rgba(150, 150, 150, 0.7);
+}
 
 /* Responsive Styles */
 @media (max-width: 480px) {
