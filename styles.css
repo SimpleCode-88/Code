@@ -219,6 +219,8 @@ button.disabled {
   padding: 0.4em 1.25em;
   box-shadow: none;
 }
+/* ======= To-Do Tracker Styles ======= */
+
 #task-tracker {
   background: rgba(255 255 255 / 0.1);
   backdrop-filter: blur(12px) saturate(180%);
@@ -311,12 +313,10 @@ button.disabled {
   border-radius: 6px;
 }
 
-#task-list li.done,
 #task-list li.completed {
   text-decoration: line-through;
   color: rgba(150, 150, 150, 0.7);
 }
-
 /* Responsive Styles */
 @media (max-width: 480px) {
   .glass-card {
