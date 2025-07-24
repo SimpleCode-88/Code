@@ -1,4 +1,3 @@
-
 // ======= LocalStorage: Session and Cycle Lengths =======
 const WORK_MINUTES_KEY = 'pomodoroWorkMinutes';
 const BREAK_MINUTES_KEY = 'pomodoroBreakMinutes';
@@ -310,3 +309,7 @@ if (isIos() && !isInStandaloneMode()) {
 // ======= Init =======
 renderTimer();
 updateSessionDisplay();
+setAllButtonsDisabled(false);
+if (isInStandaloneMode()) {
+  installBtn.style.display = 'none'; // Hide install button if already installed
+}
