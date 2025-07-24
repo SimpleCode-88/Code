@@ -1,83 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pomodoro Timer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
-  <!-- App Icons -->
-  <link rel="icon" type="image/png" sizes="192x192" href="Icon1.png" />
-  <link rel="apple-touch-icon" href="Icon1.png" sizes="192x192" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#6a82fb" />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <div class="gradient-bg">
-    <main>
-      <section class="glass-card" style="position: relative;">
-        <!-- Settings Button -->
-        <button id="open-settings" class="settings-btn" aria-label="Open settings">⚙️</button>
+  <!-- Timer Display -->
+  <div id="timer-display">00:00</div>
+  <div id="session-type">Work</div>
+  <div id="session-counter">Session: 0 / 4</div>
 
-        <!-- Session/cycle counter display -->
-        <div id="session-counter" aria-live="polite"></div>
+  <!-- Controls -->
+  <button id="start-btn">Start</button>
+  <button id="pause-btn">Pause</button>
+  <button id="reset-btn">Reset</button>
 
-        <!-- Session Summary (optional, can remove for super-minimal look) -->
-        <!-- <div id="session-summary" class="session-summary"></div> -->
+  <!-- Settings Modal -->
+  <button id="open-settings">Settings</button>
+  <dialog id="settings-modal">
+    <form id="settings-form">
+      <h2>Settings</h2>
+      <label for="settings-work">Work Minutes:</label>
+      <input type="number" id="settings-work" min="1" max="90">
+      <label for="settings-break">Break Minutes:</label>
+      <input type="number" id="settings-break" min="1" max="30">
+      <label for="settings-cycle">Cycle Length:</label>
+      <input type="number" id="settings-cycle" min="1" max="10">
+      <label for="settings-long-break">Long Break Minutes:</label>
+      <input type="number" id="settings-long-break" min="1" max="60">
+      <menu>
+        <button value="default" type="submit">Save</button>
+        <button id="close-settings" type="button">Close</button>
+      </menu>
+    </form>
+  </dialog>
 
-        <h1>Pomodoro Timer</h1>
-        <div id="progress-ring">
-          <span id="timer-display">30:00</span>
-        </div>
-        <div id="session-type">Work</div>
-        <div class="controls">
-          <button id="start-btn" aria-label="Start timer">Start</button>
-          <button id="pause-btn" aria-label="Pause or resume timer">Pause</button>
-          <button id="reset-btn" aria-label="Reset timer">Reset</button>
-        </div>
-      </section>
-      <!-- Toast for session notifications -->
-<div id="toast" class="toast" aria-live="polite" style="display:none"></div>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
 
-<!-- Alarm audio - using local .wav file -->
-<audio
-  id="alarm-audio"
-  src="mixkit-happy-bell-alert-601.wav"
-  preload="auto"
-></audio>
-      <div id="session-summary" class="session-summary"></div>
-    </main>
-    <!-- Settings Modal -->
-    <dialog id="settings-modal">
-      <form id="settings-form" method="dialog">
-        <h2>Settings</h2>
-        <label>
-          Work (minutes):
-          <input id="settings-work" type="number" min="1" max="90" required />
-        </label>
-        <label>
-          Break (minutes):
-          <input id="settings-break" type="number" min="1" max="30" required />
-        </label>
-        <label>
-          Sessions per cycle:
-          <input id="settings-cycle" type="number" min="1" max="10" required />
-        </label>
-        <label>
-          Long break (minutes):
-          <input id="settings-long-break" type="number" min="1" max="60" required />
-        </label>
-        <menu>
-          <button value="cancel" type="button" id="close-settings">Cancel</button>
-          <button value="default" type="submit">Save</button>
-        </menu>
-      </form>
-    </dialog>
-  </div>
-  <script src="script.js"></script>
+  <!-- Install Button -->
   <button id="install-btn" style="display:none;">Install App</button>
+
+  <!-- iOS Install Banner -->
   <div id="ios-install-banner" style="display:none;">iOS install instructions...</div>
+
+  <!-- Alarm Audio -->
+  <audio id="alarm-audio" src="mixkit-happy-bell-alert-601.wav" preload="auto"></audio>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
 </body>
 </html>

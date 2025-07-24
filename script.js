@@ -1,3 +1,4 @@
+
 // ======= LocalStorage: Session and Cycle Lengths =======
 const WORK_MINUTES_KEY = 'pomodoroWorkMinutes';
 const BREAK_MINUTES_KEY = 'pomodoroBreakMinutes';
