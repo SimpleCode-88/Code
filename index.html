@@ -77,24 +77,7 @@
     </dialog>
   </div>
   <script src="script.js"></script>
-</div>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('service-worker.js').then(function(registration) {
-        // Registration successful
-      }, function(err) {
-        // Registration failed
-        console.warn('ServiceWorker registration failed:', err);
-      });
-    });
-  }
-</script>
-<!-- Place this where you want the install button to appear -->
-<button id="install-btn" style="display:none;">Install App</button>
-<div id="ios-install-banner" style="display:none; background: #fffbe8; color: #444; border: 1px solid #ffe082; border-radius: 8px; padding: 1em; margin: 1em; text-align: center;">
-  <strong>Install this app:</strong><br>
-  Tap <img src="https://developer.apple.com/design/human-interface-guidelines/images/intro/hig-icon-share_2x.png" alt="Share" style="height:1em;vertical-align:middle;"> then "Add to Home Screen"
-</div>
+  <button id="install-btn" style="display:none;">Install App</button>
+  <div id="ios-install-banner" style="display:none;">iOS install instructions...</div>
 </body>
 </html>
