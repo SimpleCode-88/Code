@@ -1,50 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pomodoro Timer</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Engage - Focused Productivity Timer</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
 </head>
 <body>
-  <!-- Timer Display -->
-  <div id="timer-display">00:00</div>
-  <div id="session-type">Work</div>
-  <div id="session-counter">Session: 0 / 4</div>
+  <div class="glass-card" role="main" aria-label="Engage productivity timer app">
+    <!-- Timer Display -->
+    <div id="timer-display" aria-live="polite" aria-atomic="true" aria-label="Timer">00:00</div>
+    <div id="session-type" aria-live="polite" aria-atomic="true" aria-label="Session type">Work</div>
+    <div id="session-counter" aria-live="polite" aria-atomic="true" aria-label="Session counter">Session: 0 / 4</div>
 
-  <!-- Controls -->
-  <button id="start-btn">Start</button>
-  <button id="pause-btn">Pause</button>
-  <button id="reset-btn">Reset</button>
+    <!-- Controls -->
+    <div class="controls" role="group" aria-label="Timer controls">
+      <button id="start-btn" type="button">Start</button>
+      <button id="pause-btn" type="button">Pause</button>
+      <button id="reset-btn" type="button">Reset</button>
+    </div>
+
+    <!-- Settings Button -->
+    <button id="open-settings" class="settings-btn" aria-haspopup="dialog" aria-controls="settings-modal" aria-label="Open settings">
+      ⚙️
+    </button>
+  </div>
 
   <!-- Settings Modal -->
-  <button id="open-settings">Settings</button>
-  <dialog id="settings-modal">
-    <form id="settings-form">
-      <h2>Settings</h2>
+  <dialog id="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settings-title">
+    <form id="settings-form" method="dialog">
+      <h2 id="settings-title">Settings</h2>
       <label for="settings-work">Work Minutes:</label>
-      <input type="number" id="settings-work" min="1" max="90">
+      <input type="number" id="settings-work" min="1" max="90" required />
       <label for="settings-break">Break Minutes:</label>
-      <input type="number" id="settings-break" min="1" max="30">
+      <input type="number" id="settings-break" min="1" max="30" required />
       <label for="settings-cycle">Cycle Length:</label>
-      <input type="number" id="settings-cycle" min="1" max="10">
+      <input type="number" id="settings-cycle" min="1" max="10" required />
       <label for="settings-long-break">Long Break Minutes:</label>
-      <input type="number" id="settings-long-break" min="1" max="60">
+      <input type="number" id="settings-long-break" min="1" max="60" required />
       <menu>
-        <button value="default" type="submit">Save</button>
+        <button type="submit">Save</button>
         <button id="close-settings" type="button">Close</button>
       </menu>
     </form>
   </dialog>
 
   <!-- Toast Notification -->
-  <div id="toast" class="toast"></div>
+  <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
   <!-- Alarm Audio -->
   <audio id="alarm-audio" src="mixkit-happy-bell-alert-601.wav" preload="auto"></audio>
 
   <!-- Scripts -->
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
