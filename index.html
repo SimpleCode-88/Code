@@ -6,6 +6,7 @@
   <title>Engage - Focused Productivity Timer</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
   <div class="glass-card" role="main" aria-label="Engage productivity timer app">
@@ -13,6 +14,10 @@
     <div id="timer-display" aria-live="polite" aria-atomic="true" aria-label="Timer">00:00</div>
     <div id="session-type" aria-live="polite" aria-atomic="true" aria-label="Session type">Work</div>
     <div id="session-counter" aria-live="polite" aria-atomic="true" aria-label="Session counter">Session: 0 / 4</div>
+
+    <button id="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark mode" style="margin-left: 8px; font-size: 1.4rem; cursor: pointer;">
+  🌙
+</button>
 
     <!-- Controls -->
     <div class="controls" role="group" aria-label="Timer controls">
@@ -48,9 +53,6 @@
 
   <!-- Toast Notification -->
   <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
-
-  <!-- Alarm Audio -->
-  <audio id="alarm-audio" src="mixkit-happy-bell-alert-601.wav" preload="auto"></audio>
 
   <!-- Scripts -->
   <script src="script.js" defer></script>
