@@ -6,6 +6,7 @@ body, html {
   background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
 }
 
+
 /* Theme Variables */
 :root {
   --bg-gradient-start: #fa9cc9;
@@ -20,6 +21,7 @@ body, html {
   --settings-bg: rgba(255,255,255,0.96);
 }
 
+
 [data-theme="dark"] {
   --bg-gradient-start: #2c3e50;
   --bg-gradient-end: #34495e;
@@ -32,6 +34,7 @@ body, html {
   --toast-text: #fbc6d1;
   --settings-bg: rgba(30,30,30,0.9);
 }
+
 
 /* Card Glassmorphism */
 .glass-card {
@@ -219,40 +222,55 @@ button.disabled {
   padding: 0.4em 1.25em;
   box-shadow: none;
 }
-/* ======= To-Do Tracker Styles ======= */
 
-#task-tracker {
-  background: rgba(255 255 255 / 0.1);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border-radius: 16px;
-  border: 1px solid rgba(255 255 255 / 0.18);
-  padding: 1rem 1rem 1.2rem 1rem;
-  box-shadow: 0 4px 30px rgba(0 0 0 / 0.1);
+/* ======= To-Do List Separate Card Styling ======= */
+.glass-card.todo-card {
+  margin: 2.5rem auto 0 auto;
+  max-width: 380px;
+  min-width: 260px;
+  width: 90vw;
+  padding: 2rem 1.5rem 1.7rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--card-bg);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
   color: var(--text-primary);
-  font-weight: 600;
-  max-height: 180px;
-  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid rgba(200, 200, 255, 0.25);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
 }
 
+/* Task Tracker Container */
+#task-tracker {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Task Tracker Heading */
 #task-tracker h2 {
   margin-bottom: 0.7rem;
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   color: var(--text-secondary);
   text-align: center;
-  user-select: none;
   letter-spacing: 0.05em;
+  user-select: none;
 }
 
+/* Task Form Layout */
 #task-form {
   display: flex;
-  gap: 0.6rem;
-  margin-bottom: 0.8rem;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
 }
 
+/* Input Field */
 #task-input {
-  flex-grow: 1;
-  padding: 0.5rem 0.75rem;
+  flex: 1 1 55%;
+  padding: 0.55rem 0.75rem;
   border: 1.5px solid rgba(255 255 255 / 0.3);
   border-radius: 8px;
   font-size: 1rem;
@@ -260,6 +278,7 @@ button.disabled {
   color: var(--text-primary);
   background: rgba(255 255 255 / 0.07);
   transition: border-color 0.3s ease;
+  outline-offset: 2px;
 }
 
 #task-input:focus {
@@ -268,6 +287,7 @@ button.disabled {
   background: rgba(255 255 255 / 0.15);
 }
 
+/* Form Button Styling */
 #task-form button {
   background: var(--button-bg-gradient);
   border: none;
@@ -287,24 +307,46 @@ button.disabled {
   outline: none;
 }
 
+/* Task List Container (scrollable) */
 #task-list {
   list-style-type: disc;
-  padding-left: 1.4rem;
-  max-height: 120px;
+  padding-left: 1.3rem;
+  max-height: 190px;
+  min-height: 36px;
   overflow-y: auto;
   font-size: 1rem;
   color: var(--text-primary);
   user-select: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150,150,150,0.3) transparent;
 }
 
+/* Scrollbar styling for Webkit browsers */
+#task-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+#task-list::-webkit-scrollbar-thumb {
+  background: rgba(150,150,150,0.3);
+  border-radius: 4px;
+}
+
+#task-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Task List Items */
 #task-list li {
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
-  transition: color 0.3s ease, text-decoration 0.3s ease;
+  line-height: 1.5;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
   outline-offset: 2px;
   outline: none;
+  user-select: none;
 }
 
+/* Hover and Focus States for Tasks */
 #task-list li:hover,
 #task-list li:focus {
   color: var(--text-secondary);
@@ -313,10 +355,12 @@ button.disabled {
   border-radius: 6px;
 }
 
+/* Completed Tasks */
 #task-list li.completed {
   text-decoration: line-through;
   color: rgba(150, 150, 150, 0.7);
 }
+
 /* Responsive Styles */
 @media (max-width: 480px) {
   .glass-card {
@@ -332,11 +376,184 @@ button.disabled {
   #timer-display {
     font-size: 2.1rem;
   }
+  .glass-card.todo-card {
+    max-width: 95vw;
+    padding: 1.8rem 1rem;
+  }
 }
 
 @media (max-width: 350px) {
   .glass-card {
     padding: 0.4em 0.02em;
     font-size: 95%;
+  }
+}
+/* ======= To-Do List Separate Card Styling ======= */
+.glass-card.todo-card {
+  margin: 2.5rem auto 0 auto;
+  max-width: 380px;
+  min-width: 260px;
+  width: 90vw;
+  padding: 2rem 1.5rem 1.7rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--card-bg);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+  color: var(--text-primary);
+  border-radius: 2rem;
+  border: 1px solid rgba(200, 200, 255, 0.25);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+}
+
+/* Task Tracker Container */
+#task-tracker {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Task Tracker Heading */
+#task-tracker h2 {
+  margin-bottom: 0.7rem;
+  font-size: 1.22rem;
+  color: var(--text-secondary);
+  text-align: center;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+/* Task Form Layout */
+#task-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Input Field */
+#task-input {
+  flex: 1 1 55%;
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid rgba(255 255 255 / 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: rgba(255 255 255 / 0.07);
+  transition: border-color 0.3s ease;
+  outline-offset: 2px;
+}
+
+#task-input:focus {
+  border-color: var(--text-secondary);
+  outline: none;
+  background: rgba(255 255 255 / 0.15);
+}
+
+/* Form Button Styling */
+#task-form button {
+  background: var(--button-bg-gradient);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--button-text-color);
+  padding: 0.48rem 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(151, 189, 240, 0.18);
+  transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+#task-form button:hover,
+#task-form button:focus {
+  background: linear-gradient(90deg, #fca9d7, #74a7f2);
+  color: #ffffff;
+  outline: none;
+}
+
+/* Task List Container (scrollable) */
+#task-list {
+  list-style-type: disc;
+  padding-left: 1.3rem;
+  max-height: 190px;
+  min-height: 36px;
+  overflow-y: auto;
+  font-size: 1rem;
+  color: var(--text-primary);
+  user-select: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150,150,150,0.3) transparent;
+}
+
+/* Scrollbar styling for Webkit browsers */
+#task-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+#task-list::-webkit-scrollbar-thumb {
+  background: rgba(150,150,150,0.3);
+  border-radius: 4px;
+}
+
+#task-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Task List Items */
+#task-list li {
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  line-height: 1.5;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+  outline-offset: 2px;
+  outline: none;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Hover and Focus States for Tasks */
+#task-list li:hover,
+#task-list li:focus {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  outline: 2px solid var(--text-secondary);
+  border-radius: 6px;
+}
+
+/* Completed Tasks */
+#task-list li.completed {
+  text-decoration: line-through;
+  color: rgba(150, 150, 150, 0.7);
+}
+
+/* Remove Button Styling in task list items */
+#task-list li button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0;
+  line-height: 1;
+  user-select: none;
+  margin-left: 0.6rem;
+  transition: color 0.2s ease;
+}
+
+#task-list li button:hover,
+#task-list li button:focus {
+  color: #f994b5;
+  outline: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .glass-card.todo-card {
+    max-width: 95vw;
+    padding: 1.8rem 1rem;
   }
 }

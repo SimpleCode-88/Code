@@ -306,26 +306,55 @@ function saveTasks() {
   localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
 }
 
-// Render tasks to the task list UI
+// Remove task at index and re-render
+function removeTask(index) {
+  tasks.splice(index, 1);
+  saveTasks();
+  renderTasks();
+}
+
+// Render tasks to the task list UI, with remove button
 function renderTasks() {
   taskList.innerHTML = '';
   tasks.forEach((task, index) => {
     const li = document.createElement('li');
-    li.style.cursor = 'pointer';
-    li.style.textDecoration = task.completed ? 'line-through' : 'none';
-    li.style.color = task.completed ? 'gray' : 'inherit';
-    li.tabIndex = 0; // make focusable
-    li.textContent = task.name;
+    li.style.display = 'flex';
+    li.style.justifyContent = 'space-between';
+    li.style.alignItems = 'center';
+    li.style.marginBottom = '0.5rem';
 
-    // Toggle complete on click or keypress (Enter / Space)
-    li.addEventListener('click', () => toggleTaskCompletion(index));
-    li.addEventListener('keydown', (e) => {
+    // Task name (clickable for toggle complete)
+    const taskName = document.createElement('span');
+    taskName.style.cursor = 'pointer';
+    taskName.style.flexGrow = '1';
+    taskName.style.outline = 'none';
+    taskName.tabIndex = 0;
+    taskName.textContent = task.name;
+    if (task.completed) {
+      taskName.style.textDecoration = 'line-through';
+      taskName.style.color = 'gray';
+    }
+
+    taskName.addEventListener('click', () => toggleTaskCompletion(index));
+    taskName.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         toggleTaskCompletion(index);
       }
     });
 
+    // Remove button (no inline styles here, styled via CSS)
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = '✕';
+    removeBtn.setAttribute('aria-label', `Remove task: ${task.name}`);
+
+    removeBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent toggle complete
+      removeTask(index);
+    });
+
+    li.appendChild(taskName);
+    li.appendChild(removeBtn);
     taskList.appendChild(li);
   });
 }
