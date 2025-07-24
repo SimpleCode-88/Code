@@ -260,6 +260,52 @@ resetBtn.addEventListener('click', function () {
   if (!isTransitioning) resetTimer();
 });
 
+// ======= PWA INSTALL PROMPT =======
+let deferredPrompt;
+const installBtn = document.getElementById('install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent the mini-infobar from appearing on mobile
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show the install button
+  installBtn.style.display = 'inline-block';
+});
+
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      installBtn.style.display = 'none';
+    }
+    deferredPrompt = null;
+  }
+});
+
+// Optionally hide the button if app is already installed
+window.addEventListener('appinstalled', () => {
+  installBtn.style.display = 'none';
+});
+
+// ======= iOS PWA Detection =======
+function isIos() {
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+function isInStandaloneMode() {
+  return ('standalone' in window.navigator) && window.navigator.standalone;
+}
+
+// ======= iOS Install Guidance =======
+const iosBanner = document.getElementById('ios-install-banner');
+
+if (isIos() && !isInStandaloneMode()) {
+  iosBanner.style.display = 'block';
+  // Optionally hide the install button for iOS
+  installBtn.style.display = 'none';
+}
+
 // ======= Init =======
 renderTimer();
 updateSessionDisplay();
