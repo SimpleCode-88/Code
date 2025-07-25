@@ -1,44 +1,52 @@
-// ======= LocalStorage Keys =======
+// == LocalStorage Keys ==
 const WORK_MINUTES_KEY = 'pomodoroWorkMinutes';
 const BREAK_MINUTES_KEY = 'pomodoroBreakMinutes';
 const CYCLE_LENGTH_KEY = 'pomodoroCycleLength';
 const LONG_BREAK_MINUTES_KEY = 'pomodoroLongBreakMinutes';
-const TASKS_KEY = 'engagePomodoroTasks'; // For tasks
+const TASKS_KEY = 'engagePomodoroTasks';
 
-// ======= Helpers: Get/Set from localStorage =======
+// == Helpers: Safe Get/Set localStorage ==
+function safeLocalStorageGetItem(key, defaultValue) {
+  try {
+    const value = localStorage.getItem(key);
+    return value !== null ? value : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+}
 function getWorkMinutes() {
-  return Number(localStorage.getItem(WORK_MINUTES_KEY)) || 30;
+  return Number(safeLocalStorageGetItem(WORK_MINUTES_KEY, '30'));
 }
 function getBreakMinutes() {
-  return Number(localStorage.getItem(BREAK_MINUTES_KEY)) || 5;
+  return Number(safeLocalStorageGetItem(BREAK_MINUTES_KEY, '5'));
 }
 function setWorkMinutes(val) {
-  localStorage.setItem(WORK_MINUTES_KEY, String(val));
+  try { localStorage.setItem(WORK_MINUTES_KEY, String(val)); } catch {}
 }
 function setBreakMinutes(val) {
-  localStorage.setItem(BREAK_MINUTES_KEY, String(val));
+  try { localStorage.setItem(BREAK_MINUTES_KEY, String(val)); } catch {}
 }
 function getCycleLength() {
-  return Number(localStorage.getItem(CYCLE_LENGTH_KEY)) || 4;
+  return Number(safeLocalStorageGetItem(CYCLE_LENGTH_KEY, '4'));
 }
 function setCycleLength(val) {
-  localStorage.setItem(CYCLE_LENGTH_KEY, String(val));
+  try { localStorage.setItem(CYCLE_LENGTH_KEY, String(val)); } catch {}
 }
 function getLongBreakMinutes() {
-  return Number(localStorage.getItem(LONG_BREAK_MINUTES_KEY)) || 15;
+  return Number(safeLocalStorageGetItem(LONG_BREAK_MINUTES_KEY, '15'));
 }
 function setLongBreakMinutes(val) {
-  localStorage.setItem(LONG_BREAK_MINUTES_KEY, String(val));
+  try { localStorage.setItem(LONG_BREAK_MINUTES_KEY, String(val)); } catch {}
 }
 
-// ======= Inline audio chime using Web Audio API =======
+// == Audio Chime ==
 function playChime() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const osc = ctx.createOscillator();
   const gainNode = ctx.createGain();
 
   osc.type = 'triangle';
-  osc.frequency.value = 880; // frequency in Hz
+  osc.frequency.value = 880;
 
   gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
   gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
@@ -50,7 +58,7 @@ function playChime() {
   osc.stop(ctx.currentTime + 0.35);
 }
 
-// ======= State =======
+// == State ==
 let WORK_MINUTES = getWorkMinutes();
 let BREAK_MINUTES = getBreakMinutes();
 let CYCLE_LENGTH = getCycleLength();
@@ -69,7 +77,9 @@ let sessionCount = 0;
 let cycleLength = CYCLE_LENGTH;
 let isLongBreak = false;
 
-// ======= DOM Elements =======
+let endTime = null;
+
+// == DOM Elements ==
 const timerDisplay = document.getElementById('timer-display');
 const sessionTypeDisplay = document.getElementById('session-type');
 const sessionCounter = document.getElementById('session-counter');
@@ -89,36 +99,51 @@ const settingsLongBreakInput = document.getElementById('settings-long-break');
 
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 
-// ======= Theme Functions =======
+const taskForm = document.getElementById('task-form');
+const taskInput = document.getElementById('task-input');
+const taskList = document.getElementById('task-list');
+const submitBtn = taskForm.querySelector('button[type="submit"]');
+
+// == Theme Functions ==
 function applyTheme(theme) {
   if (theme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
   } else {
     document.documentElement.removeAttribute('data-theme');
   }
-  localStorage.setItem('theme', theme);
+  try { localStorage.setItem('theme', theme); } catch {}
 }
-
-const savedTheme = localStorage.getItem('theme') || 'light';
+function updateThemeToggleBtn(theme) {
+  if (theme === 'dark') {
+    themeToggleBtn.textContent = '☀️';
+    themeToggleBtn.setAttribute('aria-label', 'Switch to light mode');
+  } else {
+    themeToggleBtn.textContent = '🌙';
+    themeToggleBtn.setAttribute('aria-label', 'Switch to dark mode');
+  }
+}
+const savedTheme = safeLocalStorageGetItem('theme', 'light');
 applyTheme(savedTheme);
+updateThemeToggleBtn(savedTheme);
 
 themeToggleBtn.addEventListener('click', () => {
   const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(newTheme);
+  updateThemeToggleBtn(newTheme);
 });
 
-// ======= Button State Helpers =======
+// == Button State Helpers ==
 function setAllButtonsDisabled(disabled) {
   startBtn.disabled = disabled;
   pauseBtn.disabled = disabled;
   resetBtn.disabled = disabled;
   [startBtn, pauseBtn, resetBtn].forEach(btn => {
-    if (disabled) btn.classList.add('disabled');
-    else btn.classList.remove('disabled');
+    disabled ? btn.classList.add('disabled') : btn.classList.remove('disabled');
   });
 }
 
-// ======= Toast Notifications =======
+// == Toast Notifications ==
 function showToast(message) {
   toast.textContent = message;
   toast.classList.add('show');
@@ -129,28 +154,23 @@ function showToast(message) {
   }, 3000);
 }
 
-// ======= Timer Utilities =======
+// == Timer Utilities ==
 function formatTime(seconds) {
   const min = Math.floor(seconds / 60).toString().padStart(2, '0');
   const sec = (seconds % 60).toString().padStart(2, '0');
   return `${min}:${sec}`;
 }
-
 function renderTimer() {
   timerDisplay.textContent = formatTime(timer);
-  sessionTypeDisplay.textContent = isWorkSession
-    ? (isLongBreak ? 'Long Break' : 'Work')
-    : 'Break';
+  sessionTypeDisplay.textContent = isWorkSession ? (isLongBreak ? 'Long Break' : 'Work') : 'Break';
 }
-
 function updateSessionDisplay() {
-  sessionCounter.textContent =
-    isLongBreak
-      ? `On your long break! Cycle complete.`
-      : `Session: ${isWorkSession ? sessionCount + 1 : sessionCount} / ${cycleLength}`;
+  sessionCounter.textContent = isLongBreak
+    ? `On your long break! Cycle complete.`
+    : `Session: ${isWorkSession ? sessionCount + 1 : sessionCount} / ${cycleLength}`;
 }
 
-// ======= Session End Handling =======
+// == Session End Handling ==
 function handleSessionEnd() {
   setAllButtonsDisabled(true);
   isTransitioning = true;
@@ -186,13 +206,15 @@ function handleSessionEnd() {
   }, 700);
 }
 
-// ======= Timer Control Functions =======
+// == Timer Controls (timestamp precision) ==
 function startTimer() {
   if (interval || isTransitioning) return;
   setAllButtonsDisabled(false);
+  endTime = Date.now() + timer * 1000;
   interval = setInterval(() => {
-    if (!isPaused && timer > 0) {
-      timer--;
+    if (!isPaused) {
+      const remaining = Math.round((endTime - Date.now()) / 1000);
+      timer = remaining > 0 ? remaining : 0;
       renderTimer();
       if (timer === 0) {
         handleSessionEnd();
@@ -200,37 +222,35 @@ function startTimer() {
     }
   }, 1000);
 }
-
 function pauseTimer() {
   if (isTransitioning) return;
   isPaused = !isPaused;
   pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
 }
-
 function resetTimer() {
   if (isTransitioning) return;
   clearInterval(interval);
   interval = null;
   isPaused = false;
   pauseBtn.textContent = 'Pause';
-  timer = isWorkSession
-    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION)
-    : BREAK_DURATION;
+  timer = isWorkSession ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) : BREAK_DURATION;
   renderTimer();
   updateSessionDisplay();
 }
 
-// ======= Settings Modal Logic =======
+// == Settings Modal with Focus Management ==
 settingsBtn.addEventListener('click', () => {
   settingsWorkInput.value = WORK_MINUTES;
   settingsBreakInput.value = BREAK_MINUTES;
   settingsCycleInput.value = cycleLength;
   settingsLongBreakInput.value = LONG_BREAK_MINUTES;
   settingsModal.showModal();
+  settingsWorkInput.focus();
 });
 
 closeSettingsBtn.addEventListener('click', () => {
   settingsModal.close();
+  settingsBtn.focus();
 });
 
 settingsForm.addEventListener('submit', (e) => {
@@ -263,9 +283,7 @@ settingsForm.addEventListener('submit', (e) => {
   WORK_DURATION = WORK_MINUTES * 60;
   BREAK_DURATION = BREAK_MINUTES * 60;
 
-  timer = isWorkSession
-    ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION)
-    : BREAK_DURATION;
+  timer = isWorkSession ? (isLongBreak ? LONG_BREAK_DURATION : WORK_DURATION) : BREAK_DURATION;
   renderTimer();
   updateSessionDisplay();
 
@@ -279,10 +297,11 @@ settingsModal.addEventListener("click", (event) => {
     event.clientY < rect.top || event.clientY > rect.bottom
   ) {
     settingsModal.close();
+    settingsBtn.focus();
   }
 });
 
-// ======= Controls Event Listeners =======
+// == Controls Event Listeners ==
 startBtn.addEventListener('click', () => {
   if (!isTransitioning) startTimer();
 });
@@ -293,27 +312,21 @@ resetBtn.addEventListener('click', () => {
   if (!isTransitioning) resetTimer();
 });
 
-// ======= Task Tracker Logic =======
-const taskForm = document.getElementById('task-form');
-const taskInput = document.getElementById('task-input');
-const taskList = document.getElementById('task-list');
+// == Task Tracker Logic ==
+let tasks = JSON.parse(safeLocalStorageGetItem(TASKS_KEY, '[]'));
 
-// Load tasks from localStorage or start empty
-let tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || [];
-
-// Save tasks to localStorage helper
 function saveTasks() {
-  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+  try {
+    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+  } catch {}
 }
 
-// Remove task at index and re-render
 function removeTask(index) {
   tasks.splice(index, 1);
   saveTasks();
   renderTasks();
 }
 
-// Render tasks to the task list UI, with remove button
 function renderTasks() {
   taskList.innerHTML = '';
   tasks.forEach((task, index) => {
@@ -323,7 +336,6 @@ function renderTasks() {
     li.style.alignItems = 'center';
     li.style.marginBottom = '0.5rem';
 
-    // Task name (clickable for toggle complete)
     const taskName = document.createElement('span');
     taskName.style.cursor = 'pointer';
     taskName.style.flexGrow = '1';
@@ -333,6 +345,9 @@ function renderTasks() {
     if (task.completed) {
       taskName.style.textDecoration = 'line-through';
       taskName.style.color = 'gray';
+      li.classList.add('completed');
+    } else {
+      li.classList.remove('completed');
     }
 
     taskName.addEventListener('click', () => toggleTaskCompletion(index));
@@ -343,13 +358,11 @@ function renderTasks() {
       }
     });
 
-    // Remove button (no inline styles here, styled via CSS)
     const removeBtn = document.createElement('button');
     removeBtn.textContent = '✕';
     removeBtn.setAttribute('aria-label', `Remove task: ${task.name}`);
-
     removeBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent toggle complete
+      e.stopPropagation();
       removeTask(index);
     });
 
@@ -359,47 +372,59 @@ function renderTasks() {
   });
 }
 
-// Toggle task completed state
 function toggleTaskCompletion(i) {
   tasks[i].completed = !tasks[i].completed;
   saveTasks();
   renderTasks();
 }
 
-// Add or update the current task (if a task with the same name exists, update it)
 taskForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const newTaskName = taskInput.value.trim();
   if (!newTaskName) return;
 
-  // Check if task exists by name (case insensitive)
   const existingIndex = tasks.findIndex(t => t.name.toLowerCase() === newTaskName.toLowerCase());
   if (existingIndex >= 0) {
-    tasks[existingIndex].completed = false; // Reset completion on update
+    tasks[existingIndex].completed = false;
   } else {
     tasks.push({ name: newTaskName, completed: false });
   }
   saveTasks();
   renderTasks();
   taskInput.value = '';
+  submitBtn.disabled = true;
 });
 
-// Optional: Link current task to Pomodoro session start
+submitBtn.disabled = taskInput.value.trim() === '';
+taskInput.addEventListener('input', () => {
+  submitBtn.disabled = taskInput.value.trim() === '';
+});
+
 startBtn.addEventListener('click', () => {
   const currentTask = taskInput.value.trim();
   if (currentTask) {
     let index = tasks.findIndex(t => t.name.toLowerCase() === currentTask.toLowerCase());
     if (index === -1) {
       tasks.push({ name: currentTask, completed: false });
-      index = tasks.length - 1;
       saveTasks();
       renderTasks();
     }
   }
 });
 
-// ======= Initialize App =======
+// == Initialize App ==
 renderTimer();
 updateSessionDisplay();
 setAllButtonsDisabled(false);
 renderTasks();
+
+// == Service Worker Registration ==
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').then(registration => {
+      console.log('ServiceWorker registered with scope:', registration.scope);
+    }).catch(error => {
+      console.error('ServiceWorker registration failed:', error);
+    });
+  });
+}

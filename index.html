@@ -6,11 +6,11 @@
   <title>Engage - Focused Productivity Timer</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.json" />
-  <!-- Inline empty favicon to prevent 404 -->
+  <!-- Inline empty favicon to prevent 404; replace with your real favicon in production -->
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
- 
+  
   <!-- Pomodoro Timer Card -->
   <div class="glass-card" role="main" aria-label="Engage productivity timer app">
     <!-- Timer Display -->
@@ -40,10 +40,10 @@
     <section id="task-tracker" style="width: 100%;">
       <h2>Task Tracker</h2>
       <form id="task-form" aria-label="Add new task" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-        <input type="text" id="task-input" placeholder="Enter current task name" aria-label="Task name" required />
+        <input type="text" id="task-input" placeholder="Enter current task name" aria-label="Task name" required autocomplete="off" />
         <button type="submit">Add / Update Task</button>
       </form>
-      <ul id="task-list" aria-live="polite" aria-atomic="true"></ul>
+      <ul id="task-list" aria-live="polite" aria-atomic="true" aria-relevant="additions removals"></ul>
     </section>
   </div>
 
@@ -52,13 +52,13 @@
     <form id="settings-form" method="dialog">
       <h2 id="settings-title">Settings</h2>
       <label for="settings-work">Work Minutes:</label>
-      <input type="number" id="settings-work" min="1" max="90" required />
+      <input type="number" id="settings-work" min="1" max="90" step="1" required />
       <label for="settings-break">Break Minutes:</label>
-      <input type="number" id="settings-break" min="1" max="30" required />
+      <input type="number" id="settings-break" min="1" max="30" step="1" required />
       <label for="settings-cycle">Cycle Length:</label>
-      <input type="number" id="settings-cycle" min="1" max="10" required />
+      <input type="number" id="settings-cycle" min="1" max="10" step="1" required />
       <label for="settings-long-break">Long Break Minutes:</label>
-      <input type="number" id="settings-long-break" min="1" max="60" required />
+      <input type="number" id="settings-long-break" min="1" max="60" step="1" required />
       <menu>
         <button type="submit">Save</button>
         <button id="close-settings" type="button">Close</button>

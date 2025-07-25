@@ -1,13 +1,4 @@
-body, html {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: 'Montserrat', Arial, sans-serif;
-  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-}
-
-
-/* Theme Variables */
+/* === Theme Variables === */
 :root {
   --bg-gradient-start: #fa9cc9;
   --bg-gradient-end: #7fa7f5;
@@ -20,7 +11,6 @@ body, html {
   --toast-text: #87588b;
   --settings-bg: rgba(255,255,255,0.96);
 }
-
 
 [data-theme="dark"] {
   --bg-gradient-start: #2c3e50;
@@ -35,8 +25,16 @@ body, html {
   --settings-bg: rgba(30,30,30,0.9);
 }
 
+/* === Body and HTML base === */
+body, html {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+}
 
-/* Card Glassmorphism */
+/* === Glass Card === */
 .glass-card {
   background: var(--card-bg);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
@@ -44,7 +42,7 @@ body, html {
   -webkit-backdrop-filter: blur(13px);
   border-radius: 2rem;
   border: 1px solid rgba(200, 200, 255, 0.25);
-  padding: 2.5rem 2.0rem 2.5rem 2.0rem;
+  padding: 2.5rem 2rem;
   max-width: 340px;
   width: 96vw;
   margin: 8vw auto;
@@ -54,6 +52,26 @@ body, html {
   align-items: center;
 }
 
+/* === Todo Card overrides === */
+.glass-card.todo-card {
+  margin: 2.5rem auto 0 auto;
+  max-width: 380px;
+  min-width: 260px;
+  width: 90vw;
+  padding: 2rem 1.5rem 1.7rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--card-bg);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+  color: var(--text-primary);
+  border-radius: 2rem;
+  border: 1px solid rgba(200, 200, 255, 0.25);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+}
+
+/* === Headings and Timer Display === */
 h1,
 #timer-display {
   color: var(--text-primary);
@@ -73,6 +91,7 @@ h1,
   margin-bottom: 1.48rem;
 }
 
+/* === Controls container === */
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -83,6 +102,7 @@ h1,
   box-sizing: border-box;
 }
 
+/* === Buttons === */
 button {
   font-family: inherit;
   font-weight: 600;
@@ -111,6 +131,7 @@ button.disabled {
   box-shadow: none;
 }
 
+/* === Settings Button === */
 .settings-btn {
   position: absolute;
   top: 1.05rem;
@@ -133,7 +154,7 @@ button.disabled {
   outline: none;
 }
 
-/* TOAST */
+/* === Toast Notification === */
 .toast {
   position: fixed;
   left: 50%;
@@ -157,7 +178,7 @@ button.disabled {
   transform: translateX(-50%) scale(1);
 }
 
-/* SETTINGS MODAL */
+/* === Settings Modal === */
 #settings-modal {
   background: var(--settings-bg);
   border: none;
@@ -223,26 +244,7 @@ button.disabled {
   box-shadow: none;
 }
 
-/* ======= To-Do List Separate Card Styling ======= */
-.glass-card.todo-card {
-  margin: 2.5rem auto 0 auto;
-  max-width: 380px;
-  min-width: 260px;
-  width: 90vw;
-  padding: 2rem 1.5rem 1.7rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background: var(--card-bg);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
-  color: var(--text-primary);
-  border-radius: 2rem;
-  border: 1px solid rgba(200, 200, 255, 0.25);
-  backdrop-filter: blur(13px);
-  -webkit-backdrop-filter: blur(13px);
-}
-
-/* Task Tracker Container */
+/* === Task Tracker Container === */
 #task-tracker {
   width: 100%;
   display: flex;
@@ -250,7 +252,7 @@ button.disabled {
   align-items: stretch;
 }
 
-/* Task Tracker Heading */
+/* === Task Tracker Heading === */
 #task-tracker h2 {
   margin-bottom: 0.7rem;
   font-size: 1.22rem;
@@ -260,14 +262,14 @@ button.disabled {
   user-select: none;
 }
 
-/* Task Form Layout */
+/* === Task Form Layout === */
 #task-form {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.2rem;
 }
 
-/* Input Field */
+/* === Input Field === */
 #task-input {
   flex: 1 1 55%;
   padding: 0.55rem 0.75rem;
@@ -287,7 +289,7 @@ button.disabled {
   background: rgba(255 255 255 / 0.15);
 }
 
-/* Form Button Styling */
+/* === Form Button Styling === */
 #task-form button {
   background: var(--button-bg-gradient);
   border: none;
@@ -307,7 +309,14 @@ button.disabled {
   outline: none;
 }
 
-/* Task List Container (scrollable) */
+#task-form button:disabled {
+  background: #e6e9f6;
+  color: #bdb8c7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* === Task List Container (scrollable) === */
 #task-list {
   list-style-type: disc;
   padding-left: 1.3rem;
@@ -321,7 +330,7 @@ button.disabled {
   scrollbar-color: rgba(150,150,150,0.3) transparent;
 }
 
-/* Scrollbar styling for Webkit browsers */
+/* Scrollbar for WebKit browsers */
 #task-list::-webkit-scrollbar {
   width: 8px;
 }
@@ -335,172 +344,7 @@ button.disabled {
   background: transparent;
 }
 
-/* Task List Items */
-#task-list li {
-  margin-bottom: 0.5rem;
-  cursor: pointer;
-  line-height: 1.5;
-  transition: color 0.2s ease, text-decoration 0.2s ease;
-  outline-offset: 2px;
-  outline: none;
-  user-select: none;
-}
-
-/* Hover and Focus States for Tasks */
-#task-list li:hover,
-#task-list li:focus {
-  color: var(--text-secondary);
-  text-decoration: underline;
-  outline: 2px solid var(--text-secondary);
-  border-radius: 6px;
-}
-
-/* Completed Tasks */
-#task-list li.completed {
-  text-decoration: line-through;
-  color: rgba(150, 150, 150, 0.7);
-}
-
-/* Responsive Styles */
-@media (max-width: 480px) {
-  .glass-card {
-    padding: 1.4em 0.1em;
-    border-radius: 15px;
-    min-width: 90vw;
-    max-width: 97vw;
-  }
-  #progress-ring {
-    width: 130px;
-    height: 130px;
-  }
-  #timer-display {
-    font-size: 2.1rem;
-  }
-  .glass-card.todo-card {
-    max-width: 95vw;
-    padding: 1.8rem 1rem;
-  }
-}
-
-@media (max-width: 350px) {
-  .glass-card {
-    padding: 0.4em 0.02em;
-    font-size: 95%;
-  }
-}
-/* ======= To-Do List Separate Card Styling ======= */
-.glass-card.todo-card {
-  margin: 2.5rem auto 0 auto;
-  max-width: 380px;
-  min-width: 260px;
-  width: 90vw;
-  padding: 2rem 1.5rem 1.7rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background: var(--card-bg);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
-  color: var(--text-primary);
-  border-radius: 2rem;
-  border: 1px solid rgba(200, 200, 255, 0.25);
-  backdrop-filter: blur(13px);
-  -webkit-backdrop-filter: blur(13px);
-}
-
-/* Task Tracker Container */
-#task-tracker {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-
-/* Task Tracker Heading */
-#task-tracker h2 {
-  margin-bottom: 0.7rem;
-  font-size: 1.22rem;
-  color: var(--text-secondary);
-  text-align: center;
-  letter-spacing: 0.05em;
-  user-select: none;
-}
-
-/* Task Form Layout */
-#task-form {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.2rem;
-}
-
-/* Input Field */
-#task-input {
-  flex: 1 1 55%;
-  padding: 0.55rem 0.75rem;
-  border: 1.5px solid rgba(255 255 255 / 0.3);
-  border-radius: 8px;
-  font-size: 1rem;
-  font-family: inherit;
-  color: var(--text-primary);
-  background: rgba(255 255 255 / 0.07);
-  transition: border-color 0.3s ease;
-  outline-offset: 2px;
-}
-
-#task-input:focus {
-  border-color: var(--text-secondary);
-  outline: none;
-  background: rgba(255 255 255 / 0.15);
-}
-
-/* Form Button Styling */
-#task-form button {
-  background: var(--button-bg-gradient);
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  color: var(--button-text-color);
-  padding: 0.48rem 1.25rem;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(151, 189, 240, 0.18);
-  transition: background-color 0.3s ease, color 0.2s ease;
-}
-
-#task-form button:hover,
-#task-form button:focus {
-  background: linear-gradient(90deg, #fca9d7, #74a7f2);
-  color: #ffffff;
-  outline: none;
-}
-
-/* Task List Container (scrollable) */
-#task-list {
-  list-style-type: disc;
-  padding-left: 1.3rem;
-  max-height: 190px;
-  min-height: 36px;
-  overflow-y: auto;
-  font-size: 1rem;
-  color: var(--text-primary);
-  user-select: none;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(150,150,150,0.3) transparent;
-}
-
-/* Scrollbar styling for Webkit browsers */
-#task-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-#task-list::-webkit-scrollbar-thumb {
-  background: rgba(150,150,150,0.3);
-  border-radius: 4px;
-}
-
-#task-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Task List Items */
+/* === Task List Items === */
 #task-list li {
   margin-bottom: 0.5rem;
   cursor: pointer;
@@ -514,7 +358,12 @@ button.disabled {
   align-items: center;
 }
 
-/* Hover and Focus States for Tasks */
+#task-list li:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  border-radius: 6px;
+}
+
+/* Hover and Focus States */
 #task-list li:hover,
 #task-list li:focus {
   color: var(--text-secondary);
@@ -537,7 +386,7 @@ button.disabled {
   cursor: pointer;
   font-weight: 700;
   font-size: 1.1rem;
-  padding: 0;
+  padding: 0.2em 0.4em;
   line-height: 1;
   user-select: none;
   margin-left: 0.6rem;
@@ -545,15 +394,32 @@ button.disabled {
 }
 
 #task-list li button:hover,
-#task-list li button:focus {
+#task-list li button:focus-visible {
   color: #f994b5;
   outline: none;
 }
 
-/* Responsive Adjustments */
+#task-list li button:active {
+  color: #d46a93;
+}
+
+/* Controls Buttons active state */
+.controls button:active {
+  color: #f383a4;
+  background: linear-gradient(90deg, #e8ebf7 40%, #f3cdfe);
+}
+
+/* === Responsive Adjustments === */
 @media (max-width: 480px) {
   .glass-card.todo-card {
     max-width: 95vw;
     padding: 1.8rem 1rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .glass-card {
+    padding: 0.4em 0.02em;
+    font-size: 95%;
   }
 }

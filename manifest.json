@@ -3,19 +3,32 @@
   "short_name": "Pomodoro",
   "description": "A simple and beautiful Pomodoro timer.",
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#fa9cc9",
   "theme_color": "#6a82fb",
+  "lang": "en",
   "icons": [
     {
-      "src": "Icon1.png",
+      "src": "Icon1-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "Icon1-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "Icon1.png",
+      "src": "Icon1-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "Icon1-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
