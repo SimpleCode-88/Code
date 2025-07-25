@@ -91,6 +91,18 @@ h1,
   margin-bottom: 1.48rem;
 }
 
+/* === Session Counter: Explicit color for visibility === */
+#session-counter {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);  /* Light mode color */
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] #session-counter {
+  color: var(--text-secondary); /* Light color on dark background */
+}
+
 /* === Controls container === */
 .controls {
   display: flex;

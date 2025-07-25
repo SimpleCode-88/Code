@@ -1,9 +1,9 @@
 // == LocalStorage Keys ==
-const WORK_MINUTES_KEY = 'pomodoroWorkMinutes';
-const BREAK_MINUTES_KEY = 'pomodoroBreakMinutes';
-const CYCLE_LENGTH_KEY = 'pomodoroCycleLength';
-const LONG_BREAK_MINUTES_KEY = 'pomodoroLongBreakMinutes';
-const TASKS_KEY = 'engagePomodoroTasks';
+const WORK_MINUTES_KEY = 'obviaWorkMinutes';
+const BREAK_MINUTES_KEY = 'obviaBreakMinutes';
+const CYCLE_LENGTH_KEY = 'obviaCycleLength';
+const LONG_BREAK_MINUTES_KEY = 'obviaLongBreakMinutes';
+const TASKS_KEY = 'obviaTasks';
 
 // == Helpers: Safe Get/Set localStorage ==
 function safeLocalStorageGetItem(key, defaultValue) {

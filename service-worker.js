@@ -1,11 +1,11 @@
-const CACHE_NAME = "pomodoro-cache-v1";
+const CACHE_NAME = "obvia-cache-v1";
 const urlsToCache = [
   "/",
   "/index.html",
   "/styles.css",
   "/script.js",
   "/manifest.json",
-  "/Icon1.png",
+  "/Icon.png",
   "/mixkit-happy-bell-alert-601.wav",
   "/offline.html"
 ];
