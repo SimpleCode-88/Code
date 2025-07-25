@@ -95,12 +95,12 @@ h1,
 #session-counter {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);  /* Light mode color */
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 [data-theme="dark"] #session-counter {
-  color: var(--text-secondary); /* Light color on dark background */
+  color: var(--text-secondary);
 }
 
 /* === Controls container === */
